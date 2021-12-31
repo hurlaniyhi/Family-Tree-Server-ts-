@@ -33,7 +33,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
                 return res.status(400).send(response)
             }
 
-            if(Number(searchType) > 4){
+            if(Number(searchType) > 4 || Number(searchType) < 1){
                 response.responseCode = ResponseCode.BAD_REQUEST
                 response.responseDescription = ResponseDescription.BAD_REQUEST
                 return res.status(400).send(response)
