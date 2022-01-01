@@ -2,6 +2,7 @@ import {Request, Response, NextFunction} from 'express';
 import { ResponseModel } from '@src/model/interface/response.interface'
 import utility from '@src/provider/utility/utility'
 import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
+import helpers from '@src/provider/others/helpers'
 
 export default (req: Request, res: Response, next: NextFunction) => {
     var response = <ResponseModel>{}
@@ -13,8 +14,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
                 (!familyName || typeof familyName != 'string') || (!homeTown || typeof homeTown != 'string')
                 || (!country || typeof country != 'string') || (!state || typeof state != 'string')
                 ){
-                    response.responseCode = ResponseCode.BAD_REQUEST
-                    response.responseDescription = ResponseDescription.BAD_REQUEST
+                    Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
                     return res.status(400).send(response)
             }
             req.body.familyName = utility.capitalizer(familyName.trim())
@@ -28,14 +28,12 @@ export default (req: Request, res: Response, next: NextFunction) => {
             let { phoneNumber, familyName, country, state, homeTown, userName, searchType } = req.body
 
             if(!searchType || typeof searchType !== 'string'){
-                response.responseCode = "400"
-                response.responseDescription = "Bad request. Kindly check your request parameters"
+                Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
                 return res.status(400).send(response)
             }
 
             if(Number(searchType) > 4 || Number(searchType) < 1){
-                response.responseCode = ResponseCode.BAD_REQUEST
-                response.responseDescription = ResponseDescription.BAD_REQUEST
+                Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
                 return res.status(400).send(response)
             }
 
@@ -48,8 +46,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
                 || (searchType === "3" &&  (!familyName || typeof familyName != 'string'))
                 || (searchType === "4" && (!userName || typeof userName != 'string'))
             ){
-                response.responseCode = ResponseCode.BAD_REQUEST
-                response.responseDescription = ResponseDescription.BAD_REQUEST
+                Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
                 return res.status(400).send(response)
             }
 
@@ -61,9 +58,45 @@ export default (req: Request, res: Response, next: NextFunction) => {
             console.log({reqBody: req.body})
             break;
         }
+        case '/create-user': {
+            let {
+                firstName, lastName, email, password, phoneNumber, fatherName, familyId,
+                fatherPhoneNo, motherName, motherPhoneNo, address, dateOfBirth, gender
+            } = req.body
+
+            if(
+                (!firstName || typeof firstName != 'string') || (!lastName || typeof lastName != 'string')
+                || (!email || typeof email != 'string') || (!password || typeof password != 'string')
+                || (!phoneNumber || typeof phoneNumber != 'string') || (!fatherName || typeof fatherName != 'string')
+                || (!familyId || typeof familyId != 'string') || (!fatherPhoneNo || typeof fatherPhoneNo != 'string')
+                || (!motherName || typeof motherName != 'string') || (!motherPhoneNo || typeof motherPhoneNo != 'string')
+                || (!address || typeof address != 'string') || (!dateOfBirth || typeof dateOfBirth != 'string')
+                || (!gender || typeof gender != 'string')
+                ){
+                    Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
+                    return res.status(400).send(response)
+            }
+
+            req.body.firstName = utility.capitalizer(firstName.trim())
+            req.body.lastName = utility.capitalizer(lastName.trim())
+            req.body.email = utility.capitalizer(email.trim())
+            console.log({reqBody: req.body})
+            break;
+        }
+        case '/login': {
+            let {phoneNumber, password} = req.body
+
+            if(
+                (!phoneNumber || typeof phoneNumber != 'string') || (!password || typeof password != 'string')
+            ){
+                Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
+                return res.status(400).send(response)
+            }
+            
+            break;
+        }
         default: {
-            response.responseCode = ResponseCode.NOT_FOUND
-            response.responseDescription = ResponseDescription.NOT_FOUND
+            Object.assign(response, helpers.getResponse(ResponseCode.NOT_FOUND))
             return res.status(404).send(response)
         }
     }

@@ -1,3 +1,5 @@
+import { Document } from "mongoose"
+
 export interface CreateFamilyReq {
     familyName: string
     homeTown: string
@@ -15,7 +17,7 @@ export interface FamilySearchReq {
     searchType?: string,
 }
 
-export interface IUser {
+export interface IUser extends Document {
     firstName: string,
     lastName: string,
     email: string,
@@ -30,4 +32,10 @@ export interface IUser {
     gender: string,
     dateOfBirth: string,
     registrationDate: string,
+    comparePassword: (password: string) => boolean
+}
+
+export interface LoginResp {
+    phoneNumber: string,
+    password: string,
 }

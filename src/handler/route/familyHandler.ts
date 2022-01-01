@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import familyQuery from '@src/handler/query/familyQuery'
 import { CreateFamilyReq, FamilySearchReq } from '@src/model/interface/request.interface'
 import { FamilyDataResp, FamilyDetails, FamilyDetailsMax, ResponseDto, ResponseModel, UserDetailsMax } from '@src/model/interface/response.interface'
-import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
+import helpers from '@src/provider/others/helpers'
 
 const createFamily = async(req: Request, res: Response) => {
     let reqData: CreateFamilyReq = req.body
@@ -14,9 +14,7 @@ const createFamily = async(req: Request, res: Response) => {
         return res.send(response)
     }
     catch(err){
-        response.responseCode = ResponseCode.CATCH_ERROR
-        response.responseDescription = ResponseDescription.CATCH_ERROR
-        response.exception = `${err} : createFamily handler`
+        Object.assign(response, helpers.catchError(`${err} : createFamily handler`))
         return res.send(response)
     } 
 }
@@ -44,9 +42,7 @@ const searchFamily = async (req: Request, res: Response) => {
         }
     }
     catch(err){
-        response.responseCode = ResponseCode.CATCH_ERROR
-        response.responseDescription = ResponseDescription.CATCH_ERROR
-        response.exception = `${err} : from searchFamily handler`
+        Object.assign(response, helpers.catchError(`${err} : searchFamily handler`))
         return res.send(response)
     }
 }

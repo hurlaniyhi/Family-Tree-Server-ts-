@@ -60,6 +60,7 @@ const userSchema = new mongoose.Schema<IUser>({
         type: String,
         required: true
     },
+    comparePassword(password: string): boolean
 })
 
 userSchema.pre('save', function(this: any, next: any) { 
@@ -84,8 +85,7 @@ userSchema.pre('save', function(this: any, next: any) {
 
 
 userSchema.methods.comparePassword = function comparePassword(userPassword: string){
-    // user password is the password the user is trying to login with
-    const user = this   // existing user....user.password will be the existing password that has been saved in the db
+    const user = this 
 
     return new Promise ((resolve, reject) => {
         bcrypt.compare(userPassword, this.password, (err: any, isMatch: any) => {

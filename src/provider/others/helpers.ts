@@ -64,7 +64,46 @@ async function sendMail (receiver: string): Promise<ResponseModel>{
     }
 }
 
+function catchError (exception: string): ResponseModel {
+    let result = <ResponseModel>{}
+    result.responseCode = ResponseCode.CATCH_ERROR
+    result.responseDescription = ResponseDescription.CATCH_ERROR
+    result.exception = exception
+
+    return result
+}
+
+function getResponse (responseType: string, error?: string): ResponseModel {
+    let result = <ResponseModel>{}
+    
+    if(responseType === ResponseCode.FOUND_RECORD){
+        result.responseCode = ResponseCode.FOUND_RECORD
+        result.responseDescription = ResponseDescription.FOUND_RECORD
+    }
+    if(responseType === ResponseCode.PROCESS_FAILED){
+        result.responseCode = ResponseCode.PROCESS_FAILED
+        result.responseDescription = ResponseDescription.PROCESS_FAILED
+        result.exception = error
+    }
+    if(responseType === ResponseCode.NO_RECORD){
+        result.responseCode = ResponseCode.NO_RECORD
+        result.responseDescription = ResponseDescription.NO_RECORD
+    }
+    if(responseType === ResponseCode.BAD_REQUEST){
+        result.responseCode = ResponseCode.BAD_REQUEST
+        result.responseDescription = ResponseDescription.BAD_REQUEST
+    }
+    if(responseType === ResponseCode.NOT_FOUND){
+        result.responseCode = ResponseCode.NOT_FOUND
+        result.responseDescription = ResponseDescription.NOT_FOUND
+    }
+
+    return result
+}
+
 export default {
     connectToDatabase,
-    sendMail
+    sendMail,
+    catchError,
+    getResponse
 }

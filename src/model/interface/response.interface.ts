@@ -5,7 +5,8 @@ export interface ResponseModel {
     responseCode: string,
     responseDescription: string,
     exception?: string,
-    error?: string
+    error?: string,
+    token?: string
 }
 export interface ResponseDto<T> extends ResponseModel {
     data?: T
