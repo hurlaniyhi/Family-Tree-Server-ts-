@@ -57,6 +57,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
             req.body.homeTown = req.body.homeTown ? utility.capitalizer(homeTown.trim()) : null
             req.body.state = req.body.state ? utility.capitalizer(state.trim()) : null
             req.body.country = req.body.country ? utility.capitalizer(country.trim()) : null
+            req.body.userName = req.body.userName ? utility.capitalizer(userName.trim()) : null
             console.log({reqBody: req.body})
             break;
         }

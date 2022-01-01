@@ -23,10 +23,14 @@ export interface FamilyDetails {
     familyData: FamilyDataResp | string
 }
 
-export interface FamilyDataRespII extends FamilyDataResp {
+export interface FamilyDataRespMax extends FamilyDataResp {
     familyMembers: Array<IUser> | []
 }
 
-export interface FamilyDetailsII {
-    familiesData: Array<FamilyDataRespII>
+export interface FamilyDetailsMax {
+    familiesData: Array<FamilyDataRespMax>
+}
+
+export interface UserDetailsMax extends FamilyDetails {
+    userData: IUser
 }

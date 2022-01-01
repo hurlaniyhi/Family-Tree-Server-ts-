@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import familyQuery from '@src/handler/query/familyQuery'
 import { CreateFamilyReq, FamilySearchReq } from '@src/model/interface/request.interface'
-import { FamilyDataResp, FamilyDetails, FamilyDetailsII, ResponseDto, ResponseModel } from '@src/model/interface/response.interface'
+import { FamilyDataResp, FamilyDetails, FamilyDetailsMax, ResponseDto, ResponseModel, UserDetailsMax } from '@src/model/interface/response.interface'
 import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
 
 const createFamily = async(req: Request, res: Response) => {
@@ -23,7 +23,7 @@ const createFamily = async(req: Request, res: Response) => {
 
 const searchFamily = async (req: Request, res: Response) => {
     let reqData: FamilySearchReq = req.body
-    let response = <ResponseModel | ResponseDto<FamilyDetailsII> | ResponseDto<FamilyDetails>>{};
+    let response = <ResponseModel | ResponseDto<FamilyDetailsMax> | ResponseDto<FamilyDetails> | ResponseDto<UserDetailsMax[]>>{};
 
     try{
         if(reqData.searchType === '1'){
@@ -34,14 +34,14 @@ const searchFamily = async (req: Request, res: Response) => {
             response = await familyQuery.searchFamilyByFamilyDetails(reqData)
             return res.send(response)
         }
-        // if(reqData.searchType === '3'){
-        //     response = await familyQuery.searchByFamilyName_homeTown(familyName)
-        //     return response
-        // }
-        // if(reqData.searchType === '4'){
-        //     response =  await familyQuery.searchUserFamilyByUsername(userName)
-        //     return response
-        // }
+        if(reqData.searchType === '3'){
+            response = await familyQuery.searchByFamilyName_homeTown(reqData.familyName)
+            return res.send(response)
+        }
+        if(reqData.searchType === '4'){
+            response =  await familyQuery.searchUserFamilyByUsername(reqData.userName)
+            return res.send(response)
+        }
     }
     catch(err){
         response.responseCode = ResponseCode.CATCH_ERROR

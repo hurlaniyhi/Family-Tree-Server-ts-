@@ -7,11 +7,11 @@ export interface CreateFamilyReq {
 
 export interface FamilySearchReq {
     phoneNumber: string,
-    familyName?: string, 
+    familyName: string, 
     country?: string, 
     state?: string, 
     homeTown?: string, 
-    userName?: string, 
+    userName: string, 
     searchType?: string,
 }
 
