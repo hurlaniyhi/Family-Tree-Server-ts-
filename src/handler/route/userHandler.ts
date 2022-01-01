@@ -17,7 +17,7 @@ const createUser = async (req: Request, res: Response) => {
         return res.send(response)
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : createUser handler`))
+        response = helpers.catchErrorResponse(`${err} : createUser handler`)
         return res.send(response)
     }
 }
@@ -31,7 +31,7 @@ const login = async (req: Request, res: Response) => {
         return res.send(response)
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : login handler`))
+        response = helpers.catchErrorResponse(`${err} : login handler`)
         return res.send(response)
     }
 }
@@ -52,7 +52,7 @@ const sendOtp = async (req: Request, res: Response) => {
         return res.send(response)
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : sendOtp handler`))
+        response = helpers.catchErrorResponse(`${err} : sendOtp handler`)
         return res.send(response)
     }
 }
@@ -66,7 +66,7 @@ const changePassword = async (req: Request, res: Response) => {
         return res.send(response)
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : changePassword handler`))
+        response = helpers.catchErrorResponse(`${err} : changePassword handler`)
         return res.send(response)
     }
 }

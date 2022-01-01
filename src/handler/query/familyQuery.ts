@@ -1,7 +1,7 @@
 import mongoose from"mongoose";
 import { CreateFamilyReq, FamilySearchReq, IUser } from "@src/model/interface/request.interface";
 import { FamilyDataResp, ResponseDto, FamilyDetails, FamilyDataRespMax, FamilyDetailsMax, UserDetailsMax } from '@src/model/interface/response.interface'
-import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
+import { ResponseCode } from '@src/provider/others/constant'
 import userQuery from '@src/handler/query/userQuery'
 import utility from '@src/provider/utility/utility'
 import helpers from '@src/provider/others/helpers'
@@ -15,7 +15,7 @@ const createFamilyQuery = async (data: CreateFamilyReq): Promise<ResponseDto<Fam
 
     const checkExistence = await Family.findOne({familyName, homeTown, country, state})
     if(checkExistence){
-      Object.assign(result, helpers.getResponse(ResponseCode.FOUND_RECORD))
+      result = helpers.getResponse(ResponseCode.FOUND_RECORD)
       return result
     }
     
@@ -29,18 +29,17 @@ const createFamilyQuery = async (data: CreateFamilyReq): Promise<ResponseDto<Fam
     
       await family.save()
         .then(doc => {
-            result.responseCode = ResponseCode.SUCCESS
-            result.responseDescription = ResponseDescription.SUCCESS
+            result = helpers.getResponse(ResponseCode.SUCCESS)
             result.data = (doc as FamilyDataResp)
         })
         .catch(err => {
-            Object.assign(result, helpers.getResponse(ResponseCode.PROCESS_FAILED, `${err} : createFamily query`))
+            result = helpers.getResponse(ResponseCode.PROCESS_FAILED, `${err} : createFamily query`)
         })
       
      return result;
     }
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : createFamily query`))
+        result = helpers.catchErrorResponse(`${err} : createFamily query`)
         return result
     }
 }
@@ -50,14 +49,13 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
     try{
         let searchedUser  = (await User.findOne({phoneNumber}) as IUser|null)
         if(!searchedUser){
-            Object.assign(result, helpers.getResponse(ResponseCode.NO_RECORD))
+            result = helpers.getResponse(ResponseCode.NO_RECORD)
             return result;
         }
     
         const familyData = (await userQuery.getUserOtherDetails(searchedUser) as FamilyDetails)
       
-        result.responseCode = ResponseCode.SUCCESS
-        result.responseDescription = ResponseDescription.SUCCESS
+        result = helpers.getResponse(ResponseCode.SUCCESS)
         result.data = <FamilyDetails>{
             familyData: familyData.familyData, 
             familyMembers: familyData.familyMembers
@@ -65,7 +63,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
         return result;
     }
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : searchFamilyByPhoneNumber query`))
+        result = helpers.catchErrorResponse(`${err} : searchFamilyByPhoneNumber query`)
         return result;
     }
   }
@@ -77,7 +75,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
     try{
         const searchedFamilies = (await Family.find({$or:[{familyName, country, state},{homeTown, country, state}]}) as [FamilyDataResp])
         if(!searchedFamilies.length){
-            Object.assign(response, helpers.getResponse(ResponseCode.NO_RECORD))
+            response = helpers.getResponse(ResponseCode.NO_RECORD)
             return response;
         }
     
@@ -85,7 +83,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
         return response;
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : searchFamilyByFamilyDetails query`))
+        response = helpers.catchErrorResponse(`${err} : searchFamilyByFamilyDetails query`)
         return response;
     }
   }
@@ -96,7 +94,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
     try{
       const searchedFamilies = (await Family.find({$or:[{familyName},{homeTown: familyName}]}) as [FamilyDataResp])
       if(!searchedFamilies.length){
-        Object.assign(response, helpers.getResponse(ResponseCode.NO_RECORD))
+        response = helpers.getResponse(ResponseCode.NO_RECORD)
         return response;
       }
   
@@ -104,7 +102,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
       return response
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : searchByFamilyName_homeTown query`))
+        response = helpers.catchErrorResponse(`${err} : searchByFamilyName_homeTown query`)
         return response;
     }
   }
@@ -123,7 +121,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
   
         var users = (await User.find({ $or: [{ firstName, lastName }, { firstName: lastName, lastName: firstName }] }) as Array<IUser> | [])
         if(!users.length){
-            Object.assign(result, helpers.getResponse(ResponseCode.NO_RECORD))
+            result = helpers.getResponse(ResponseCode.NO_RECORD)
             return result;
         }
       }
@@ -131,7 +129,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
         var users = (await User.find({$or:[{firstName: username}, {lastName: username}]}) as Array<IUser> | [])
         console.log({user: users})
         if(!users.length){
-            Object.assign(result, helpers.getResponse(ResponseCode.NO_RECORD))
+            result = helpers.getResponse(ResponseCode.NO_RECORD)
             return result;
         }
       }
@@ -144,13 +142,12 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
         usersData.push(userData as UserDetailsMax)
       }
       
-      result.responseCode = ResponseCode.SUCCESS
-      result.responseDescription = ResponseDescription.SUCCESS
+      result = helpers.getResponse(ResponseCode.SUCCESS)
       result.data = usersData
       return result
     }
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : searchUserFamilyByUsername query`))
+        result = helpers.catchErrorResponse(`${err} : searchUserFamilyByUsername query`)
         return result;
     }
   }
@@ -170,13 +167,12 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
             familiesData.push(familyDetail)
         }
         
-        result.responseCode = ResponseCode.SUCCESS
-        result.responseDescription = ResponseDescription.SUCCESS
+        result = helpers.getResponse(ResponseCode.SUCCESS)
         result.data = { familiesData }
         return result;
     }
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : getFamilyMembers query`))
+        result = helpers.catchErrorResponse(`${err} : getFamilyMembers query`)
         return result;
     }
   }

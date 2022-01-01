@@ -45,26 +45,21 @@ async function sendMail (receiver: string): Promise<ResponseModel>{
         await transporter.sendMail(mailOptions)
             .then(info => {
                 console.log("Message sent: %s", info.messageId);
-                response.responseCode = ResponseCode.SUCCESS
-                response.responseDescription = ResponseDescription.SUCCESS
+                response = getResponse(ResponseCode.SUCCESS)
             })
             .catch(error => {
                 console.log(error)
-                response.responseCode = ResponseCode.PROCESS_FAILED
-                response.responseDescription = ResponseDescription.PROCESS_FAILED
-                response.error = error
+                response = getResponse(ResponseCode.PROCESS_FAILED, `${error} :  sendMail method`)
             })      
         return response
     }
     catch(err){
-        response.responseCode = ResponseCode.CATCH_ERROR
-        response.responseDescription = ResponseDescription.CATCH_ERROR
-        response.exception = `${err} : from sendMail method`
+        response = catchErrorResponse(`${err} : sendMail method`)
         return response
     }
 }
 
-function catchError (exception: string, responseType?: string, ): ResponseModel {
+function catchErrorResponse (exception: string, responseType?: string): ResponseModel {
     let result = <ResponseModel>{}
     if(responseType === ResponseCode.INVALID_USER){
         result.responseCode = ResponseCode.INVALID_USER
@@ -108,6 +103,10 @@ function getResponse (responseType: string, error?: string): ResponseModel {
         result.responseCode = ResponseCode.INVALID_USER
         result.responseDescription = ResponseDescription.INVALID_USER
     }
+    if(responseType === ResponseCode.SUCCESS){
+        result.responseCode = ResponseCode.SUCCESS
+        result.responseDescription = ResponseDescription.SUCCESS
+    }
 
     return result
 }
@@ -115,6 +114,6 @@ function getResponse (responseType: string, error?: string): ResponseModel {
 export default {
     connectToDatabase,
     sendMail,
-    catchError,
+    catchErrorResponse,
     getResponse
 }

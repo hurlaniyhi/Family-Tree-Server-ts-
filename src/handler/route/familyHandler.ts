@@ -15,7 +15,7 @@ const createFamily = async(req: Request, res: Response) => {
         return res.send(response)
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : createFamily handler`))
+        response = helpers.catchErrorResponse(`${err} : createFamily handler`)
         return res.send(response)
     } 
 }
@@ -43,7 +43,7 @@ const searchFamily = async (req: Request, res: Response) => {
         }
     }
     catch(err){
-        Object.assign(response, helpers.catchError(`${err} : searchFamily handler`))
+        response = helpers.catchErrorResponse(`${err} : searchFamily handler`)
         return res.send(response)
     }
 }

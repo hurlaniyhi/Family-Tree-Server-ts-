@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import { ForgetPasswordReq, IUser, LoginResp } from "@src/model/interface/request.interface";
 import { FamilyDetails, FamilyDataResp, UserDetailsMax, ResponseDto, ResponseModel } from '@src/model/interface/response.interface'
-import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
+import { ResponseCode } from '@src/provider/others/constant'
 import helpers from '@src/provider/others/helpers'
 import  config from "@src/config/config"
 
@@ -17,7 +17,7 @@ const createUserQuery = async (data: IUser): Promise<ResponseDto<UserDetailsMax>
     try{
         const userExistence = await User.findOne({phoneNumber: data.phoneNumber})
         if(userExistence){
-            Object.assign(result, helpers.getResponse(ResponseCode.FOUND_RECORD))
+            result = helpers.getResponse(ResponseCode.FOUND_RECORD)
             return result;
         }
 
@@ -26,8 +26,7 @@ const createUserQuery = async (data: IUser): Promise<ResponseDto<UserDetailsMax>
         .then( async doc => {
             const token: string = jwt.sign({userId: doc._id}, config.secretKey)
             const otherData = await getUserOtherDetails(doc as IUser)
-            result.responseCode = ResponseCode.SUCCESS
-            result.responseDescription = ResponseDescription.SUCCESS
+            result = helpers.getResponse(ResponseCode.SUCCESS)
             result.token = token
             result.data = <UserDetailsMax>{
                 userData: doc,
@@ -36,13 +35,13 @@ const createUserQuery = async (data: IUser): Promise<ResponseDto<UserDetailsMax>
             }
         })
         .catch(err => {
-            Object.assign(result, helpers.getResponse(ResponseCode.PROCESS_FAILED, `${err} : createUser query`))
+            result = helpers.getResponse(ResponseCode.PROCESS_FAILED, `${err} : createUser query`)
         })
 
         return result;
     }
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : createUser query`))
+        result = helpers.catchErrorResponse(`${err} : createUser query`)
         return result;
     }
 }
@@ -51,7 +50,7 @@ const loginQuery = async (data: LoginResp): Promise<ResponseDto<UserDetailsMax>>
     let result = <ResponseDto<UserDetailsMax>>{}
     const user = (await User.findOne({phoneNumber: data.phoneNumber}) as IUser)
     if(!user){
-        Object.assign(result, helpers.getResponse(ResponseCode.INVALID_USER))
+        result = helpers.getResponse(ResponseCode.INVALID_USER)
         return result;
     }
 
@@ -59,8 +58,7 @@ const loginQuery = async (data: LoginResp): Promise<ResponseDto<UserDetailsMax>>
         await user.comparePassword(data.password)
         const token = jwt.sign({userId: user._id}, config.secretKey)
         const otherData = await getUserOtherDetails(user)
-        result.responseCode = ResponseCode.SUCCESS
-        result.responseDescription = ResponseDescription.SUCCESS
+        result = helpers.getResponse(ResponseCode.SUCCESS)
         result.token = token
         result.data = <UserDetailsMax>{
             userData: user,
@@ -70,7 +68,7 @@ const loginQuery = async (data: LoginResp): Promise<ResponseDto<UserDetailsMax>>
         return result;
     }           
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : loginQuery query`, ResponseCode.INVALID_USER))
+        result = helpers.catchErrorResponse(`${err} : loginQuery query`, ResponseCode.INVALID_USER)
         return result
     }  
 }
@@ -92,16 +90,15 @@ const checkUserWithEmail = async (email: string): Promise<ResponseModel> => {
     try{
         const user = await User.findOne({email})
         if(!user){
-            Object.assign(result, helpers.getResponse(ResponseCode.INVALID_USER))
+            result = helpers.getResponse(ResponseCode.INVALID_USER)
             return result;
         }
 
-        result.responseCode = ResponseCode.SUCCESS
-        result.responseDescription = ResponseDescription.SUCCESS
+        result = helpers.getResponse(ResponseCode.SUCCESS)
         return  result
     }
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : checkUserWithEmail query`))
+        result = helpers.catchErrorResponse(`${err} : checkUserWithEmail query`)
         return result;
     }
 }
@@ -112,7 +109,7 @@ const changePasswordQuery = async (data: ForgetPasswordReq): Promise<ResponseMod
     try{
         const user = await User.findOne({phoneNumber: data.phoneNumber, email: data.email})
         if(!user){
-            Object.assign(result, helpers.getResponse(ResponseCode.NO_RECORD))
+            result = helpers.getResponse(ResponseCode.NO_RECORD)
             return result;
         }
 
@@ -125,13 +122,12 @@ const changePasswordQuery = async (data: ForgetPasswordReq): Promise<ResponseMod
                         }
                     }) as IUser)
 
-        result.responseCode = ResponseCode.SUCCESS
-        result.responseDescription = ResponseDescription.SUCCESS
+        result = helpers.getResponse(ResponseCode.SUCCESS)
         return result;
     }
     catch(err){
-        Object.assign(result, helpers.catchError(`${err} : changePasswordQuery query`))
-        return result
+        result = helpers.catchErrorResponse(`${err} : changePasswordQuery query`)
+        return result;
     }
 }
 
