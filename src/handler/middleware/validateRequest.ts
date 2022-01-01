@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import { ResponseModel } from '@src/model/interface/response.interface'
 import utility from '@src/provider/utility/utility'
-import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
+import { constant, ResponseCode, ResponseDescription } from '@src/provider/others/constant'
 import helpers from '@src/provider/others/helpers'
 
 export default (req: Request, res: Response, next: NextFunction) => {
@@ -32,7 +32,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
                 return res.status(400).send(response)
             }
 
-            if(Number(searchType) > 4 || Number(searchType) < 1){
+            if(searchType > constant.SEARCHFAMILY_USERNAME || searchType < constant.SEARCHFAMILY_PHONENUMBER){
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
                 return res.status(400).send(response)
             }
@@ -79,7 +79,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
             req.body.firstName = utility.capitalizer(firstName.trim())
             req.body.lastName = utility.capitalizer(lastName.trim())
-            req.body.email = utility.capitalizer(email.trim())
+            req.body.email = email.trim()
             console.log({reqBody: req.body})
             break;
         }
@@ -92,7 +92,33 @@ export default (req: Request, res: Response, next: NextFunction) => {
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
                 return res.status(400).send(response)
             }
+
+            break;
+        }
+        case '/send-otp': {
+            let { email, emailType } = req.body
+
+            if(
+                (!email || typeof email != 'string') || (!emailType || typeof emailType != 'string') ||
+                (emailType != constant.EMAIL_ONBOARDING && emailType != constant.EMAIL_FORGET_PASSWORD)
+            ){
+                Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
+                return res.status(400).send(response)
+            }
+
+            req.body.email = email.trim()
+            break;
+        }
+        case '/change-password': {
+            let { email, password, phoneNumber} = req.body
+            if(
+                (!email || typeof email != 'string') ||  (!password || typeof password != 'string') ||  (!phoneNumber || typeof phoneNumber != 'string')
+            ){
+                Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
+                return res.status(400).send(response)
+            }
             
+            req.body.email = email.trim()
             break;
         }
         default: {

@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
-import { IUser, LoginResp } from "@src/model/interface/request.interface";
-import  config from "@src/config/config"
-import { FamilyDetails, FamilyDataResp, UserDetailsMax, ResponseDto } from '@src/model/interface/response.interface'
+import { ForgetPasswordReq, IUser, LoginResp } from "@src/model/interface/request.interface";
+import { FamilyDetails, FamilyDataResp, UserDetailsMax, ResponseDto, ResponseModel } from '@src/model/interface/response.interface'
 import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
 import helpers from '@src/provider/others/helpers'
+import  config from "@src/config/config"
 
 const User = mongoose.model("User");
 const Family = mongoose.model("Family");
@@ -51,7 +51,7 @@ const loginQuery = async (data: LoginResp): Promise<ResponseDto<UserDetailsMax>>
     let result = <ResponseDto<UserDetailsMax>>{}
     const user = (await User.findOne({phoneNumber: data.phoneNumber}) as IUser)
     if(!user){
-        Object.assign(result, helpers.getResponse(ResponseCode.NO_RECORD))
+        Object.assign(result, helpers.getResponse(ResponseCode.INVALID_USER))
         return result;
     }
 
@@ -70,7 +70,8 @@ const loginQuery = async (data: LoginResp): Promise<ResponseDto<UserDetailsMax>>
         return result;
     }           
     catch(err){
-        return { responseCode: "101", responseDescription: "Invalid username or password", exception: `${err} : from login query`}
+        Object.assign(result, helpers.catchError(`${err} : loginQuery query`, ResponseCode.INVALID_USER))
+        return result
     }  
 }
 
@@ -86,8 +87,58 @@ const getUserOtherDetails = async (data: IUser): Promise<FamilyDetails> => {
     return result
 }
 
+const checkUserWithEmail = async (email: string): Promise<ResponseModel> => {
+    let result = <ResponseModel>{}
+    try{
+        const user = await User.findOne({email})
+        if(!user){
+            Object.assign(result, helpers.getResponse(ResponseCode.INVALID_USER))
+            return result;
+        }
+
+        result.responseCode = ResponseCode.SUCCESS
+        result.responseDescription = ResponseDescription.SUCCESS
+        return  result
+    }
+    catch(err){
+        Object.assign(result, helpers.catchError(`${err} : checkUserWithEmail query`))
+        return result;
+    }
+}
+
+const changePasswordQuery = async (data: ForgetPasswordReq): Promise<ResponseModel> => {
+    var result = <ResponseModel>{};
+
+    try{
+        const user = await User.findOne({phoneNumber: data.phoneNumber, email: data.email})
+        if(!user){
+            Object.assign(result, helpers.getResponse(ResponseCode.NO_RECORD))
+            return result;
+        }
+
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(data.password, salt)
+        console.log(hash)
+        const userData = (await User.findByIdAndUpdate({_id: user._id}, {     
+                        $set: {
+                            password: hash
+                        }
+                    }) as IUser)
+
+        result.responseCode = ResponseCode.SUCCESS
+        result.responseDescription = ResponseDescription.SUCCESS
+        return result;
+    }
+    catch(err){
+        Object.assign(result, helpers.catchError(`${err} : changePasswordQuery query`))
+        return result
+    }
+}
+
 export default {
     getUserOtherDetails,
     createUserQuery,
-    loginQuery
+    loginQuery,
+    checkUserWithEmail,
+    changePasswordQuery
 }

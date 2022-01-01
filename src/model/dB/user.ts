@@ -59,8 +59,7 @@ const userSchema = new mongoose.Schema<IUser>({
     familyId: {
         type: String,
         required: true
-    },
-    comparePassword(password: string): boolean
+    }
 })
 
 userSchema.pre('save', function(this: any, next: any) { 
@@ -81,8 +80,6 @@ userSchema.pre('save', function(this: any, next: any) {
         })
     })
 })
-
-
 
 userSchema.methods.comparePassword = function comparePassword(userPassword: string){
     const user = this 

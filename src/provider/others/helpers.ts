@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import nodemailer from 'nodemailer'
 import { ResponseModel } from '@src/model/interface/response.interface'
 import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
-const { emailUser, emailPass, otpMailContent } = require('@src/config/config')
+import config from '@src/config/config'
 
 function connectToDatabase (connectionString: string): void{
     const mongoUri = connectionString
@@ -26,8 +26,8 @@ async function sendMail (receiver: string): Promise<ResponseModel>{
             port: 465,
             secure: true,
              auth: {
-               user: emailUser,
-               pass: emailPass
+               user: config.emailUser,
+               pass: config.emailPass
              },
            });
          
@@ -36,7 +36,7 @@ async function sendMail (receiver: string): Promise<ResponseModel>{
             to: receiver, 
             subject: "Account Verification", 
             html: `<div>
-                    <p>${otpMailContent}</p>
+                    <p>${config.otpMailContent}</p>
                     <p style="margin-bottom: 20px">Otp: <strong>${otp}</strong></p>
                     <p>Thank you.</p>
                 </div>`
@@ -64,18 +64,25 @@ async function sendMail (receiver: string): Promise<ResponseModel>{
     }
 }
 
-function catchError (exception: string): ResponseModel {
+function catchError (exception: string, responseType?: string, ): ResponseModel {
     let result = <ResponseModel>{}
-    result.responseCode = ResponseCode.CATCH_ERROR
-    result.responseDescription = ResponseDescription.CATCH_ERROR
-    result.exception = exception
+    if(responseType === ResponseCode.INVALID_USER){
+        result.responseCode = ResponseCode.INVALID_USER
+        result.responseDescription = ResponseDescription.INVALID_USER
+        result.exception = exception
+    }
+    else{
+        result.responseCode = ResponseCode.CATCH_ERROR
+        result.responseDescription = ResponseDescription.CATCH_ERROR
+        result.exception = exception
+    }
 
     return result
 }
 
 function getResponse (responseType: string, error?: string): ResponseModel {
     let result = <ResponseModel>{}
-    
+
     if(responseType === ResponseCode.FOUND_RECORD){
         result.responseCode = ResponseCode.FOUND_RECORD
         result.responseDescription = ResponseDescription.FOUND_RECORD
@@ -96,6 +103,10 @@ function getResponse (responseType: string, error?: string): ResponseModel {
     if(responseType === ResponseCode.NOT_FOUND){
         result.responseCode = ResponseCode.NOT_FOUND
         result.responseDescription = ResponseDescription.NOT_FOUND
+    }
+    if(responseType === ResponseCode.INVALID_USER){
+        result.responseCode = ResponseCode.INVALID_USER
+        result.responseDescription = ResponseDescription.INVALID_USER
     }
 
     return result

@@ -39,3 +39,14 @@ export interface LoginResp {
     phoneNumber: string,
     password: string,
 }
+
+export interface SendOtpReq {
+    email: string,
+    emailType: string,
+}
+
+export interface ForgetPasswordReq {
+    email: string,
+    password: string,
+    phoneNumber: string,
+}
