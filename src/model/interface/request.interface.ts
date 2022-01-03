@@ -32,6 +32,7 @@ export interface IUser extends Document {
     gender: string,
     dateOfBirth: string,
     registrationDate: string,
+    profilePicture: string,
     comparePassword: (password: string) => boolean
 }
 

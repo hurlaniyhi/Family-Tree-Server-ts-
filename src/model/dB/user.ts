@@ -59,6 +59,10 @@ const userSchema = new mongoose.Schema<IUser>({
     familyId: {
         type: String,
         required: true
+    },
+    profilePicture: {
+        type: String,
+        required: true
     }
 })
 

@@ -4,12 +4,22 @@ import { ForgetPasswordReq, IUser, LoginResp, SendOtpReq } from '@src/model/inte
 import { ResponseDto, ResponseModel, UserDetailsMax } from '@src/model/interface/response.interface'
 import helpers from '@src/provider/others/helpers'
 import { constant, ResponseCode } from '@src/provider/others/constant'
-
+            
 
 const createUser = async (req: Request, res: Response) => {
-    let reqData: IUser = req.body
     let response = <ResponseDto<UserDetailsMax>>{}
 
+    const validatedFormData = helpers.validateFormData(req)
+    if(validatedFormData.responseCode != ResponseCode.SUCCESS){
+        return res.send(validatedFormData)
+    }
+    let reqData: IUser = validatedFormData.data!
+    
+    let uploadedPicture = await helpers.uploadPicture(req)
+    console.log({url: uploadedPicture.data})
+    if(uploadedPicture.responseCode != ResponseCode.SUCCESS) return uploadedPicture
+
+    reqData.profilePicture = uploadedPicture.data!
     try{
         reqData.registrationDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`
 

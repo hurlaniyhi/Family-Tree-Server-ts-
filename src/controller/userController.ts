@@ -1,10 +1,15 @@
 import express, {Router} from 'express';
 import validateRequest from '@src/handler/middleware/validateRequest';
-const router: Router = express.Router();
 import userHandler from '@src/handler/route/userHandler';
+import helpers from '@src/provider/others/helpers'
+import multer from 'multer'
+
+const router: Router = express.Router();
+const storage = helpers.getUploadStorage()
+const upload = multer({storage})
 router.use(validateRequest)
 
-router.post('/create-user', userHandler.createUser)
+router.post('/create-user', upload.single('Picture'), userHandler.createUser)
 router.post('/login', userHandler.login)
 router.post('/send-otp', userHandler.sendOtp)
 router.post('/change-password', userHandler.changePassword)

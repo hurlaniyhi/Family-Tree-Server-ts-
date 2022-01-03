@@ -5,7 +5,6 @@ const capitalizer = (str: string): string => {
     })   
 }
 
-
 export default {
     capitalizer
 }

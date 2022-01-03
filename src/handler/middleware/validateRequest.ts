@@ -1,12 +1,14 @@
 import {Request, Response, NextFunction} from 'express';
 import { ResponseModel } from '@src/model/interface/response.interface'
 import utility from '@src/provider/utility/utility'
-import { constant, ResponseCode, ResponseDescription } from '@src/provider/others/constant'
+import { constant, ResponseCode } from '@src/provider/others/constant'
 import helpers from '@src/provider/others/helpers'
 
-export default (req: Request, res: Response, next: NextFunction) => {
+
+export default async(req: Request, res: Response, next: NextFunction) => {
     var response = <ResponseModel>{}
     console.log({path: req.path})
+
     switch(req.path) {
         case '/create-family': {
             let { familyName, homeTown, country, state} = req.body
@@ -59,28 +61,6 @@ export default (req: Request, res: Response, next: NextFunction) => {
             break;
         }
         case '/create-user': {
-            let {
-                firstName, lastName, email, password, phoneNumber, fatherName, familyId,
-                fatherPhoneNo, motherName, motherPhoneNo, address, dateOfBirth, gender
-            } = req.body
-
-            if(
-                (!firstName || typeof firstName != 'string') || (!lastName || typeof lastName != 'string')
-                || (!email || typeof email != 'string') || (!password || typeof password != 'string')
-                || (!phoneNumber || typeof phoneNumber != 'string') || (!fatherName || typeof fatherName != 'string')
-                || (!familyId || typeof familyId != 'string') || (!fatherPhoneNo || typeof fatherPhoneNo != 'string')
-                || (!motherName || typeof motherName != 'string') || (!motherPhoneNo || typeof motherPhoneNo != 'string')
-                || (!address || typeof address != 'string') || (!dateOfBirth || typeof dateOfBirth != 'string')
-                || (!gender || typeof gender != 'string')
-                ){
-                    Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                    return res.status(400).send(response)
-            }
-
-            req.body.firstName = utility.capitalizer(firstName.trim())
-            req.body.lastName = utility.capitalizer(lastName.trim())
-            req.body.email = email.trim()
-            console.log({reqBody: req.body})
             break;
         }
         case '/login': {
