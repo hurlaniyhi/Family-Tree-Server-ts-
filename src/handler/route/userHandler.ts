@@ -14,7 +14,7 @@ const createUser = async (req: Request, res: Response) => {
         return res.send(validatedFormData)
     }
     let reqData: IUser = validatedFormData.data!
-    
+
     let uploadedPicture = await helpers.uploadPicture(req)
     console.log({url: uploadedPicture.data})
     if(uploadedPicture.responseCode != ResponseCode.SUCCESS) return uploadedPicture
@@ -32,7 +32,7 @@ const createUser = async (req: Request, res: Response) => {
     }
 }
 
-const login = async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response) => { 
     let reqData: LoginResp = req.body
     let response;
 

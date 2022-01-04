@@ -7,8 +7,7 @@ export const ResponseCode = {
     BAD_REQUEST: '400',
     NOT_FOUND: '404',
     INVALID_USER: '99',
-    LARGE_FILE: '403',
-
+    LARGE_FILE: '403'
 }
 
 export const ResponseDescription = {
@@ -29,5 +28,6 @@ export const constant = {
     SEARCHFAMILY_PHONENUMBER: "1",
     SEARCHFAMILY_FAMILYDETAILS: "2",
     SEARCHFAMILY_NAME_HOMETOWN: "3" ,
-    SEARCHFAMILY_USERNAME: "4"
+    SEARCHFAMILY_USERNAME: "4",
+    MAX_FILE_SIZE: 2000000
 }

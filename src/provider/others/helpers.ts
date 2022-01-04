@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import nodemailer from 'nodemailer'
 import { ResponseModel, ResponseDto } from '@src/model/interface/response.interface'
 import { IUser } from '@src/model/interface/request.interface'
-import { ResponseCode, ResponseDescription } from '@src/provider/others/constant'
+import { constant, ResponseCode, ResponseDescription } from '@src/provider/others/constant'
 import config from '@src/config/config'
 import utility from '@src/provider/utility/utility'
 import multer from 'multer'
@@ -73,7 +73,7 @@ function validateFormData (req: any): ResponseDto<IUser>{
     } = req.body
 
     if(!req.file) return getResponse(ResponseCode.BAD_REQUEST)
-    if(req.file.size > 2000000) return getResponse(ResponseCode.LARGE_FILE)
+    if(req.file.size > constant.MAX_FILE_SIZE) return getResponse(ResponseCode.LARGE_FILE)
     if(
         (!firstName || typeof firstName != 'string') || (!lastName || typeof lastName != 'string')
         || (!email || typeof email != 'string') || (!password || typeof password != 'string')
@@ -96,7 +96,7 @@ function validateFormData (req: any): ResponseDto<IUser>{
 
 async function uploadPicture (req: any): Promise<ResponseDto<string>> {
     let result = <ResponseDto<string>>{}
-    console.log({file: req.file})
+
     if(!req.file){
         result = getResponse(ResponseCode.PROCESS_FAILED)
         return result
