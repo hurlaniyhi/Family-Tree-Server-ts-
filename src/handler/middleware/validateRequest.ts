@@ -10,7 +10,8 @@ export default async(req: Request, res: Response, next: NextFunction) => {
     console.log({path: req.path})
 
     switch(req.path) {
-        case '/create-family': {
+        case '/create-family': 
+        case '/update-family-details': {
             let { familyName, homeTown, country, state} = req.body
             if(
                 (!familyName || typeof familyName != 'string') || (!homeTown || typeof homeTown != 'string')
@@ -18,6 +19,11 @@ export default async(req: Request, res: Response, next: NextFunction) => {
                 ){
                     Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
                     return res.status(400).send(response)
+            }
+
+            if(req.path === '/update-family-details' && !req.body._id){
+                response = helpers.getResponse(ResponseCode.BAD_REQUEST)
+                return res.status(400).send(response)
             }
             req.body.familyName = utility.capitalizer(familyName.trim())
             req.body.homeTown = utility.capitalizer(homeTown.trim())

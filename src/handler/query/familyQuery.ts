@@ -177,6 +177,27 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
     }
   }
   
+  async function updateFamilyDetailsQuery(data: CreateFamilyReq): Promise<ResponseDto<FamilyDataResp>> {
+    let result = <ResponseDto<FamilyDataResp>>{}
+    let { familyName, homeTown, country, state, _id } = data
+
+    try{
+      const updatedFamilyData = (await Family.findByIdAndUpdate({_id}, 
+        {$set: {familyName, homeTown, country, state}},
+        { new: true }
+      ) as FamilyDataResp)
+      
+      if(!updatedFamilyData) return helpers.getResponse(ResponseCode.PROCESS_FAILED)
+
+      result = helpers.getResponse(ResponseCode.SUCCESS)
+      result.data = updatedFamilyData
+      return result
+    }
+    catch(err){
+      result = helpers.catchErrorResponse(`${err} : updateFamilyDetailsQuery query`)
+        return result;
+    }
+  }
 
 
 export default {
@@ -184,5 +205,6 @@ export default {
     searchFamilyByPhoneNumber,
     searchFamilyByFamilyDetails,
     searchByFamilyName_homeTown,
-    searchUserFamilyByUsername
+    searchUserFamilyByUsername,
+    updateFamilyDetailsQuery
 }

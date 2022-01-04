@@ -121,6 +121,7 @@ const changePasswordQuery = async (data: ForgetPasswordReq): Promise<ResponseMod
                             password: hash
                         }
                     }) as IUser)
+        if(!userData) return helpers.getResponse(ResponseCode.PROCESS_FAILED)
 
         result = helpers.getResponse(ResponseCode.SUCCESS)
         return result;

@@ -1,6 +1,6 @@
 import { Document } from "mongoose"
 
-export interface CreateFamilyReq {
+export interface CreateFamilyReq extends Document{
     familyName: string
     homeTown: string
     country: string

@@ -48,8 +48,23 @@ const searchFamily = async (req: Request, res: Response) => {
     }
 }
 
+const updateFamilyDetails = async (req: Request, res: Response) => {
+    let reqData: CreateFamilyReq = req.body
+    let response = <ResponseDto<FamilyDataResp>>{}
+
+    try{
+        const response = await familyQuery.updateFamilyDetailsQuery(reqData)
+        return res.send(response)
+    }
+    catch(err){
+        response = helpers.catchErrorResponse(`${err} : searchFamily handler`)
+        return res.send(response)
+    }
+}
+
 
 export default {
     createFamily,
-    searchFamily
+    searchFamily,
+    updateFamilyDetails
 }
