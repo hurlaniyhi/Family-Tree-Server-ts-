@@ -33,7 +33,10 @@ export interface IUser extends Document {
     dateOfBirth: string,
     registrationDate: string,
     profilePicture: string,
-    comparePassword: (password: string) => boolean
+    comparePassword: (password: string) => boolean,
+    children?: Array<any>,
+    education?: Array<any>,
+    workExperience: Array<any>
 }
 
 export interface LoginResp {

@@ -11,7 +11,7 @@ const User = mongoose.model("User");
 const Family = mongoose.model("Family");
 
 
-const createUserQuery = async (data: IUser): Promise<ResponseDto<UserDetailsMax>> => {
+const createUserQuery = async (data: IUser, req: any): Promise<ResponseDto<UserDetailsMax | string>> => {
     let result = <ResponseDto<UserDetailsMax>>{};
 
     try{
@@ -20,6 +20,14 @@ const createUserQuery = async (data: IUser): Promise<ResponseDto<UserDetailsMax>
             result = helpers.getResponse(ResponseCode.FOUND_RECORD)
             return result;
         }
+
+        let uploadedPicture = await helpers.uploadPicture(req)
+        console.log({url: uploadedPicture.data})
+        if(uploadedPicture.responseCode != ResponseCode.SUCCESS){
+            return uploadedPicture
+        }
+
+        data.profilePicture = uploadedPicture.data!
 
         const user = new User(data)
         await user.save()
@@ -132,10 +140,46 @@ const changePasswordQuery = async (data: ForgetPasswordReq): Promise<ResponseMod
     }
 }
 
+const updateUserDetailsQuery = async (data: IUser, req: any): Promise<ResponseDto<IUser | string>> => {
+    let result = <ResponseDto<IUser | string>>{};
+
+    try{
+        if(req.file){
+            let uploadedPicture = await helpers.uploadPicture(req)
+            console.log({url: uploadedPicture.data})
+            if(uploadedPicture.responseCode != ResponseCode.SUCCESS){
+                return uploadedPicture
+            }    
+
+            data.profilePicture = uploadedPicture.data!
+        }
+        
+        let filteredData: any = {...data}
+        delete filteredData.password
+        console.log({filteredData})
+
+        const updatedUserData = (await User.findByIdAndUpdate({_id: data._id}, 
+            {$set: filteredData},
+            { new: true }
+          ) as IUser)
+          
+        if(!updatedUserData) return helpers.getResponse(ResponseCode.PROCESS_FAILED)
+        
+        result = helpers.getResponse(ResponseCode.SUCCESS)
+        result.data = (updatedUserData as IUser)
+        return result;
+    }
+    catch(err){
+        result = helpers.catchErrorResponse(`${err} : createUser query`)
+        return result;
+    }
+}
+
 export default {
     getUserOtherDetails,
     createUserQuery,
     loginQuery,
     checkUserWithEmail,
-    changePasswordQuery
+    changePasswordQuery,
+    updateUserDetailsQuery
 }

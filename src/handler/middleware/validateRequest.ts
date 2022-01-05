@@ -66,7 +66,9 @@ export default async(req: Request, res: Response, next: NextFunction) => {
             console.log({reqBody: req.body})
             break;
         }
-        case '/create-user': {
+        case '/create-user': 
+        case '/update-user-details': {
+            console.log({middleware: req.body})
             break;
         }
         case '/login': {

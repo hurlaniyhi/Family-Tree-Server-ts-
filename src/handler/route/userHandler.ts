@@ -7,7 +7,7 @@ import { constant, ResponseCode } from '@src/provider/others/constant'
             
 
 const createUser = async (req: Request, res: Response) => {
-    let response = <ResponseDto<UserDetailsMax>>{}
+    let response = <ResponseDto<UserDetailsMax | string>>{}
 
     const validatedFormData = helpers.validateFormData(req)
     if(validatedFormData.responseCode != ResponseCode.SUCCESS){
@@ -15,15 +15,10 @@ const createUser = async (req: Request, res: Response) => {
     }
     let reqData: IUser = validatedFormData.data!
 
-    let uploadedPicture = await helpers.uploadPicture(req)
-    console.log({url: uploadedPicture.data})
-    if(uploadedPicture.responseCode != ResponseCode.SUCCESS) return uploadedPicture
-
-    reqData.profilePicture = uploadedPicture.data!
     try{
         reqData.registrationDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`
 
-        response = await userQuery.createUserQuery(reqData)
+        response = await userQuery.createUserQuery(reqData, req)
         return res.send(response)
     }
     catch(err){
@@ -81,9 +76,29 @@ const changePassword = async (req: Request, res: Response) => {
     }
 }
 
+const updateUserDetails = async (req: Request, res: Response) => {
+    let response = <ResponseDto<IUser | string>>{}
+
+    const validatedFormData = helpers.validateFormData(req)
+    if(validatedFormData.responseCode != ResponseCode.SUCCESS){
+        return res.send(validatedFormData)
+    }
+    let reqData: IUser = validatedFormData.data!
+
+    try{
+        response = await userQuery.updateUserDetailsQuery(reqData, req)
+        return res.send(response)
+    }
+    catch(err){
+        response = helpers.catchErrorResponse(`${err} : updateUserDetails handler`)
+        return res.send(response)
+    }
+}
+
 export default {
     createUser,
     login,
     sendOtp,
-    changePassword
+    changePassword,
+    updateUserDetails
 }

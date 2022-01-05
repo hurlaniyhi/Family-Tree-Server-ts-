@@ -63,7 +63,10 @@ const userSchema = new mongoose.Schema<IUser>({
     profilePicture: {
         type: String,
         required: true
-    }
+    },
+    children: [String],
+    education: [String],
+    workExperience: [String]
 })
 
 userSchema.pre('save', function(this: any, next: any) { 

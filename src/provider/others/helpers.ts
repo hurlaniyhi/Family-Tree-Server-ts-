@@ -69,26 +69,47 @@ async function sendMail (receiver: string): Promise<ResponseModel>{
 function validateFormData (req: any): ResponseDto<IUser>{
      let {
         firstName, lastName, email, password, phoneNumber, fatherName, familyId,
-        fatherPhoneNo, motherName, motherPhoneNo, address, dateOfBirth, gender
+        fatherPhoneNo, motherName, motherPhoneNo, address, dateOfBirth, gender, children,
+        education, workExperience, profilePicture, _id
     } = req.body
 
-    if(!req.file) return getResponse(ResponseCode.BAD_REQUEST)
-    if(req.file.size > constant.MAX_FILE_SIZE) return getResponse(ResponseCode.LARGE_FILE)
+    console.log({children})
+    if(!profilePicture){
+        if(!req.file) return getResponse(ResponseCode.BAD_REQUEST)
+        if(req.file.size > constant.MAX_FILE_SIZE) return getResponse(ResponseCode.LARGE_FILE)
+    }
+    
     if(
         (!firstName || typeof firstName != 'string') || (!lastName || typeof lastName != 'string')
-        || (!email || typeof email != 'string') || (!password || typeof password != 'string')
+        || (!email || typeof email != 'string') || (req.path != '/update-user-details' && (!password || typeof password != 'string'))
         || (!phoneNumber || typeof phoneNumber != 'string') || (!fatherName || typeof fatherName != 'string')
         || (!familyId || typeof familyId != 'string') || (!fatherPhoneNo || typeof fatherPhoneNo != 'string')
         || (!motherName || typeof motherName != 'string') || (!motherPhoneNo || typeof motherPhoneNo != 'string')
         || (!address || typeof address != 'string') || (!dateOfBirth || typeof dateOfBirth != 'string')
-        || (!gender || typeof gender != 'string')
+        || (!gender || typeof gender != 'string') || (utility.validateArrayElements(children))
+        || (utility.validateArrayElements(education)) || (utility.validateArrayElements(workExperience))
         ){
             return getResponse(ResponseCode.BAD_REQUEST)
     }
 
-    req.body.firstName = utility.capitalizer(firstName.trim())
-    req.body.lastName = utility.capitalizer(lastName.trim())
+    if(req.path === '/update-user-details'){
+        if(!_id || typeof _id != 'string') return getResponse(ResponseCode.BAD_REQUEST)
+    }
+
+    req.body.firstName = utility.capitalizer(firstName)
+    req.body.lastName = utility.capitalizer(lastName)
+    req.body.fatherName = utility.capitalizer(fatherName)
+    req.body.motherName = utility.capitalizer(motherName)
     req.body.email = email.trim()
+    req.body.children = req.body.children?.length > 0 ? 
+    utility.capitalizeArrayElements(req.body.children) : req.body.children
+    req.body.education = req.body.education?.length > 0 ? 
+    utility.capitalizeArrayElements(req.body.education) : req.body.education
+    req.body.workExperience = req.body.workExperience?.length > 0 ? 
+    utility.capitalizeArrayElements(req.body.workExperience) : req.body.workExperience
+
+    console.log({body: req.body})
+
     let result: ResponseDto<IUser> = getResponse(ResponseCode.SUCCESS)
     result.data = req.body
     return result
