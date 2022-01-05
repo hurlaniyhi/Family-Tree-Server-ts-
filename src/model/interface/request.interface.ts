@@ -36,7 +36,8 @@ export interface IUser extends Document {
     comparePassword: (password: string) => boolean,
     children?: Array<any>,
     education?: Array<any>,
-    workExperience: Array<any>
+    workExperience?: Array<any>,
+    interest?: Array<any>
 }
 
 export interface LoginResp {

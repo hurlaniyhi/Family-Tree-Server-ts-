@@ -70,7 +70,7 @@ function validateFormData (req: any): ResponseDto<IUser>{
      let {
         firstName, lastName, email, password, phoneNumber, fatherName, familyId,
         fatherPhoneNo, motherName, motherPhoneNo, address, dateOfBirth, gender, children,
-        education, workExperience, profilePicture, _id
+        education, workExperience, profilePicture, _id, interest
     } = req.body
 
     console.log({children})
@@ -88,6 +88,7 @@ function validateFormData (req: any): ResponseDto<IUser>{
         || (!address || typeof address != 'string') || (!dateOfBirth || typeof dateOfBirth != 'string')
         || (!gender || typeof gender != 'string') || (utility.validateArrayElements(children))
         || (utility.validateArrayElements(education)) || (utility.validateArrayElements(workExperience))
+        || (utility.validateArrayElements(interest))
         ){
             return getResponse(ResponseCode.BAD_REQUEST)
     }
@@ -101,12 +102,14 @@ function validateFormData (req: any): ResponseDto<IUser>{
     req.body.fatherName = utility.capitalizer(fatherName)
     req.body.motherName = utility.capitalizer(motherName)
     req.body.email = email.trim()
-    req.body.children = req.body.children?.length > 0 ? 
-    utility.capitalizeArrayElements(req.body.children) : req.body.children
-    req.body.education = req.body.education?.length > 0 ? 
-    utility.capitalizeArrayElements(req.body.education) : req.body.education
-    req.body.workExperience = req.body.workExperience?.length > 0 ? 
-    utility.capitalizeArrayElements(req.body.workExperience) : req.body.workExperience
+    req.body.children = children?.length > 0 ? 
+    utility.capitalizeArrayElements(children) : children
+    req.body.education = education?.length > 0 ? 
+    utility.capitalizeArrayElements(education) : education
+    req.body.workExperience = workExperience?.length > 0 ? 
+    utility.capitalizeArrayElements(workExperience) : workExperience
+    req.body.interest = interest?.length > 0 ? 
+    utility.capitalizeArrayElements(interest) : interest
 
     console.log({body: req.body})
 

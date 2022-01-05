@@ -66,7 +66,8 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     children: [String],
     education: [String],
-    workExperience: [String]
+    workExperience: [String],
+    interest: [String]
 })
 
 userSchema.pre('save', function(this: any, next: any) { 
