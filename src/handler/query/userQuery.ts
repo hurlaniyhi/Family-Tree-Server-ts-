@@ -20,14 +20,15 @@ const createUserQuery = async (data: IUser, req: any): Promise<ResponseDto<UserD
             result = helpers.getResponse(ResponseCode.FOUND_RECORD)
             return result;
         }
+        
+        if(!data.profilePicture){
+            let uploadedPicture = await helpers.uploadPicture(req)
+            if(uploadedPicture.responseCode != ResponseCode.SUCCESS){
+                return uploadedPicture
+            }
 
-        let uploadedPicture = await helpers.uploadPicture(req)
-        console.log({url: uploadedPicture.data})
-        if(uploadedPicture.responseCode != ResponseCode.SUCCESS){
-            return uploadedPicture
+            data.profilePicture = uploadedPicture.data!
         }
-
-        data.profilePicture = uploadedPicture.data!
 
         const user = new User(data)
         await user.save()

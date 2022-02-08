@@ -111,7 +111,7 @@ export default async(req: Request, res: Response, next: NextFunction) => {
         }
         default: {
             Object.assign(response, helpers.getResponse(ResponseCode.NOT_FOUND))
-            return res.status(404).send(response)
+            return res.send(response)
         }
     }
 

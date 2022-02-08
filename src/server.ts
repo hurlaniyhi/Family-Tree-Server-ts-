@@ -11,6 +11,7 @@ const port: string|number = process.env.PORT || 5000
 const app:Application = express() 
 
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/family/", familyController)
 app.use("/user/", userController)
 

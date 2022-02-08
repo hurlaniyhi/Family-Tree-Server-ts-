@@ -17,6 +17,11 @@ export interface FamilySearchReq {
     searchType?: string,
 }
 
+export interface ChildData {
+    name: string,
+    childPhoneNo: string
+}
+
 export interface IUser extends Document {
     firstName: string,
     lastName: string,
@@ -34,7 +39,7 @@ export interface IUser extends Document {
     registrationDate: string,
     profilePicture: string,
     comparePassword: (password: string) => boolean,
-    children?: Array<any>,
+    children?: Array<ChildData>,
     education?: Array<any>,
     workExperience?: Array<any>,
     interest?: Array<any>

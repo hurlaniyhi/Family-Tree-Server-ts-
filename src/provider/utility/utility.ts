@@ -1,3 +1,5 @@
+import { ChildData } from "@src/model/interface/request.interface"
+
 // Make a string start with a capital letter
 const capitalizer = (str: string): string => {
   let splittedString = str.trim().split(' ')
@@ -17,20 +19,29 @@ const validateArrayElements = (arr: Array<any> | any): boolean => {
 
   if(arr.length > 0) {
     for(let element of arr){
-      if(element.toUpperCase() === element && element.toLowerCase() === element){
-        result = true; break;
+      if(element.name){
+        if(element.name.toUpperCase() === element.name && element.name.toLowerCase() === element.name){
+          result = true; break;
+        }
+        else result = false;
       }
-      else result = false;
+      else{
+        if(element.toUpperCase() === element && element.toLowerCase() === element){
+          result = true; break;
+        }
+        else result = false;
+      }
     }
   }
 
   return result
 }
 
-const capitalizeArrayElements = (arr: Array<string>): Array<string> => {
+const capitalizeArrayElements = (arr: Array<any>): Array<any> => {
   let capitalizedArray = []
   for(let str of arr){
-    capitalizedArray.push(capitalizer(str))
+    if(str.name) capitalizedArray.push({...str, name: capitalizer(str.name)})
+    else capitalizedArray.push(capitalizer(str))
   }
   return capitalizedArray
 }

@@ -1,6 +1,12 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
-import { IUser } from '@src/model/interface/request.interface'
+import { IUser, ChildData } from '@src/model/interface/request.interface'
+
+const childSchema = new mongoose.Schema<ChildData>({
+    name: String,
+    childPhoneNo: String
+
+})
 
 const userSchema = new mongoose.Schema<IUser>({
     firstName: {
@@ -64,7 +70,7 @@ const userSchema = new mongoose.Schema<IUser>({
         type: String,
         required: true
     },
-    children: [String],
+    children: [childSchema],
     education: [String],
     workExperience: [String],
     interest: [String]
