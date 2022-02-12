@@ -92,7 +92,7 @@ const searchFamilyByPhoneNumber = async (phoneNumber: string): Promise<ResponseD
     let response = <ResponseDto<FamilyDetailsMax>>{}
 
     try{
-      const searchedFamilies = (await Family.find({$or:[{familyName},{homeTown: familyName}]}) as [FamilyDataResp])
+      const searchedFamilies = (await Family.find({$or:[{familyName}, {homeTown: familyName}]}) as [FamilyDataResp])
       if(!searchedFamilies.length){
         response = helpers.getResponse(ResponseCode.NO_RECORD)
         return response;

@@ -73,7 +73,6 @@ function validateFormData (req: any): ResponseDto<IUser>{
         education, workExperience, profilePicture, _id, interest
     } = req.body
 
-    console.log({children})
     if(!profilePicture){
         if(!req.file) return getResponse(ResponseCode.BAD_REQUEST)
         if(req.file.size > constant.MAX_FILE_SIZE) return getResponse(ResponseCode.LARGE_FILE)

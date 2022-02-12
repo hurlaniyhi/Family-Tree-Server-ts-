@@ -18,31 +18,32 @@ export default async(req: Request, res: Response, next: NextFunction) => {
                 || (!country || typeof country != 'string') || (!state || typeof state != 'string')
                 ){
                     Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                    return res.status(400).send(response)
+                    return res.send(response)
             }
 
             if(req.path === '/update-family-details' && !req.body._id){
                 response = helpers.getResponse(ResponseCode.BAD_REQUEST)
-                return res.status(400).send(response)
+                return res.send(response)
             }
             req.body.familyName = utility.capitalizer(familyName.trim())
             req.body.homeTown = utility.capitalizer(homeTown.trim())
             req.body.state = utility.capitalizer(state.trim())
             req.body.country = utility.capitalizer(country.trim())
-            console.log({reqBody: req.body})
+            //console.log({reqBody: req.body})
             break;
         }
         case '/search-family': {
             let { phoneNumber, familyName, country, state, homeTown, userName, searchType } = req.body
+            console.log({payload: req.body})
 
             if(!searchType || typeof searchType !== 'string'){
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                return res.status(400).send(response)
+                return res.send(response)
             }
 
             if(searchType > constant.SEARCHFAMILY_USERNAME || searchType < constant.SEARCHFAMILY_PHONENUMBER){
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                return res.status(400).send(response)
+                return res.send(response)
             }
 
             if(
@@ -55,7 +56,7 @@ export default async(req: Request, res: Response, next: NextFunction) => {
                 || (searchType === "4" && (!userName || typeof userName != 'string'))
             ){
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                return res.status(400).send(response)
+                return res.send(response)
             }
 
             req.body.familyName = req.body.familyName ? utility.capitalizer(familyName.trim()) : null
