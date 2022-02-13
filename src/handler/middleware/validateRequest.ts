@@ -79,7 +79,7 @@ export default async(req: Request, res: Response, next: NextFunction) => {
                 (!phoneNumber || typeof phoneNumber != 'string') || (!password || typeof password != 'string')
             ){
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                return res.status(400).send(response)
+                return res.send(response)
             }
 
             break;

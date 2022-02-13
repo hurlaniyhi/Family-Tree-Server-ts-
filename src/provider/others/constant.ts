@@ -18,7 +18,7 @@ export const ResponseDescription = {
     FOUND_RECORD: "Record already exist",
     BAD_REQUEST: "Bad request. Kindly check your request parameters",
     NOT_FOUND: "Route could not be found",
-    INVALID_USER: "Invalid user",
+    INVALID_USER: "Invalid phone number or password",
     LARGE_FILE: "Profile picture is too large"
 }
 

@@ -14,4 +14,5 @@ router.post('/login', userHandler.login)
 router.post('/send-otp', userHandler.sendOtp)
 router.post('/change-password', userHandler.changePassword)
 router.post('/update-user-details', upload.single('Picture'), userHandler.updateUserDetails)
+
 export default router;
