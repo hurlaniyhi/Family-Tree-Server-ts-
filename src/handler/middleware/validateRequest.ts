@@ -92,19 +92,19 @@ export default async(req: Request, res: Response, next: NextFunction) => {
                 (emailType != constant.EMAIL_ONBOARDING && emailType != constant.EMAIL_FORGET_PASSWORD)
             ){
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                return res.status(400).send(response)
+                return res.send(response)
             }
 
             req.body.email = email.trim()
             break;
         }
         case '/change-password': {
-            let { email, password, phoneNumber} = req.body
+            let { email, password} = req.body
             if(
-                (!email || typeof email != 'string') ||  (!password || typeof password != 'string') ||  (!phoneNumber || typeof phoneNumber != 'string')
+                (!email || typeof email != 'string') ||  (!password || typeof password != 'string')
             ){
                 Object.assign(response, helpers.getResponse(ResponseCode.BAD_REQUEST))
-                return res.status(400).send(response)
+                return res.send(response)
             }
             
             req.body.email = email.trim()

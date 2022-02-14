@@ -116,7 +116,7 @@ const changePasswordQuery = async (data: ForgetPasswordReq): Promise<ResponseMod
     var result = <ResponseModel>{};
 
     try{
-        const user = await User.findOne({phoneNumber: data.phoneNumber, email: data.email})
+        const user = await User.findOne({email: data.email})
         if(!user){
             result = helpers.getResponse(ResponseCode.NO_RECORD)
             return result;

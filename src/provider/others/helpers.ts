@@ -53,6 +53,7 @@ async function sendMail (receiver: string): Promise<ResponseModel>{
             .then(info => {
                 console.log("Message sent: %s", info.messageId);
                 response = getResponse(ResponseCode.SUCCESS)
+                response.token = String(otp)
             })
             .catch(error => {
                 console.log(error)

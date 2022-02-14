@@ -57,6 +57,5 @@ export interface SendOtpReq {
 
 export interface ForgetPasswordReq {
     email: string,
-    password: string,
-    phoneNumber: string,
+    password: string
 }
