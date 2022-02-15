@@ -14,5 +14,8 @@ router.post('/login', userHandler.login)
 router.post('/send-otp', userHandler.sendOtp)
 router.post('/change-password', userHandler.changePassword)
 router.post('/update-user-details', upload.single('Picture'), userHandler.updateUserDetails)
+router.get('/', (req, res) => {
+    res.send("Welcome to Family Tree")
+})
 
 export default router;
